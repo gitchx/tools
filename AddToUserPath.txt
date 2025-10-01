@@ -1,0 +1,31 @@
+# スクリプトのあるディレクトリを取得（PSScriptRootが使えないので代替）
+$scriptDir = (Get-Location).Path
+
+# 追加したいパス一覧（各ツールのフォルダ）
+$pathsToAdd = @(
+    "$scriptDir\bin\nvim-win64\bin",
+    "$scriptDir\bin\pandoc-3.8.1",
+    "$scriptDir\bin\PortableGit\cmd",
+    "$scriptDir\bin\gitchx-cli-Windows-amd64",
+    "$scriptDir\bin\zstd-v1.5.7-win64",
+    "$scriptDir\bin\gh_2.81.0_windows_amd64\bin"
+)
+
+# 現在のユーザー PATH を取得
+$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User)
+
+# まだ含まれていないパスだけを抽出
+$newPaths = $pathsToAdd | Where-Object { $existingPath -notlike "*$_*" }
+
+if ($newPaths.Count -gt 0) {
+    # 新しい PATH を生成
+    $newPath = ($existingPath.TrimEnd(';') + ";" + ($newPaths -join ";")).TrimEnd(';')
+
+    # ユーザー PATH を更新
+    [Environment]::SetEnvironmentVariable("Path", $newPath, [EnvironmentVariableTarget]::User)
+
+    Write-Host "`n以下のパスをユーザー PATH に追加しました:" -ForegroundColor Green
+    $newPaths | ForEach-Object { Write-Host " - $_" }
+} else {
+    Write-Host "`nすべてのパスはすでにユーザー PATH に含まれています。" -ForegroundColor Yellow
+}

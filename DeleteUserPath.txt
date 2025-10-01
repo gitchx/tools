@@ -1,0 +1,29 @@
+# カレントディレクトリを基準としたパス（追加したパスと同じ構成にする）
+$scriptDir = (Get-Location).Path
+
+# 削除したいパス一覧（過去に追加したものと一致させる）
+$pathsToRemove = @(
+    "$scriptDir\bin\nvim-win64\bin",
+    "$scriptDir\bin\pandoc-3.8.1",
+    "$scriptDir\bin\PortableGit\cmd",
+    "$scriptDir\bin\gitchx-cli-Windows-amd64",
+    "$scriptDir\bin\zstd-v1.5.7-win64",
+    "$scriptDir\bin\gh_2.81.0_windows_amd64\bin"
+)
+
+# 現在のユーザー PATH を取得してセミコロンで分割
+$existingPath = [Environment]::GetEnvironmentVariable("Path", [EnvironmentVariableTarget]::User)
+$pathList = $existingPath -split ';'
+
+# 指定されたパスを除外
+$newPathList = $pathList | Where-Object { $pathsToRemove -notcontains $_ }
+
+# PATH を再構築（空要素を除いて連結）
+$cleanPath = ($newPathList | Where-Object { $_ -ne "" }) -join ';'
+
+# 環境変数を更新
+[Environment]::SetEnvironmentVariable("Path", $cleanPath, [EnvironmentVariableTarget]::User)
+
+# 出力
+Write-Host "`n以下のパスをユーザー PATH から削除しました:" -ForegroundColor Red
+$pathsToRemove | ForEach-Object { Write-Host " - $_" }
