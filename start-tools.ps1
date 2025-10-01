@@ -7,13 +7,15 @@
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
 
 # PATH に追加
-$env:PATH = "$ScriptDir\nvim-win64\bin;$ScriptDir\pandoc-3.8.1;$ScriptDir\PortableGit\cmd;$ScriptDir\gitchx-cli-Windows-amd64;$env:PATH"
+$env:PATH = "$ScriptDir\nvim-win64\bin;$ScriptDir\pandoc-3.8.1;$ScriptDir\PortableGit\cmd;$ScriptDir\gitchx-cli-Windows-amd64;$ScriptDir\zstd-v1.5.7-win64;$ScriptDir\gh_2.81.0_windows_amd64\bin;$env:PATH"
 
 # ツール確認
 Write-Host "=== PATH にツールを追加しました ==="
 Write-Host "Git: $(git --version)"
 Write-Host "Neovim: $(nvim --version | Select-Object -First 1)"
 Write-Host "Pandoc: $(pandoc --version | Select-Object -First 1)"
+Write-Host "Github CLI: $(gh --version | Select-Object -First 1)"
+Write-Host "zstd: $(zstd --version | Select-Object -First 1)"
 
 # gitchx-cli ツールの存在確認
 foreach ($tool in "wcat","pdoc","gpush") {
